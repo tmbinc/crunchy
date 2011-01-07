@@ -1,0 +1,7 @@
+This is a very rough patch to xc3sprog that
+
+- add a very simple makefile,
+- a very simple python wrapper,
+- XC2VP50 support.
+
+
