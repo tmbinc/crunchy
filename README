@@ -1,1 +1,128 @@
-Please be patient. There will be content soon.
+A very quick&dirty guide to brute force DES:
+
+1. Build xc3sprog.
+2. Make sure that xc3sprog -j finds your FPGA board.
+   - I tend to like FTDI JTAG cables. If you use something else, you might
+     have to add support into xc3sprog's python wrapper.
+3. Install "crunchy" python library
+   - cd src/crunchy; python setup.py install
+4. Use "build_design" to build a bitstream for your board:
+   - python build_design.py Dance2048 descrack \
+       NR_CORES=6,WORKUNIT_BITS=38,NR_PATTERNS=16
+5. initialize project:
+   - python cli.py descrack init descrack WORKUNIT_BITS=38
+   - python cli.py descrack adduser username password
+   - python cli.py descrack add_pattern 0 3237433300000000
+     (add more patterns if you like)
+6. run server:
+   - python server.py descrack
+7. run client:
+   - PYTHONPATH=../xc3sprog/ python run.py descrack \
+       NR_CORES=6,WORKUNIT_BITS=38,NR_RESULTS=16 Dance2048 http://localhost:8880 \
+       username password --productid=0x6011 --instances=9 --bitstream=dance2048_6_16_38.bit
+     "product id" here is the usb PID of m FTDI cable. 
+
+A more descriptive guide of what the tools do:
+
+
+== xc3sprog == 
+
+xc3sprog is a branch of the well-known xc3sprog that's used a backend method
+to talk to the FPGA. There is a very simple python wrapper around it that
+allows to do three things:
+
+1. Chain enumeration
+2. Programming bitstreams
+3. Talking with USER chains
+
+
+== build_design.py ==
+
+build_design builds a bitstream based on the
+
+- board description,
+- project HDL code,
+- parameters for the project.
+
+A sample invokation would be
+
+python build_design.py Dance2048 descrack NR_CORES=6,WORKUNIT_BITS=38,NR_PATTERNS=16
+
+which would build the "descrack" project for a "Dance2048" board with the
+parameters 
+
+NR_CORES=6
+WORKUNIT_BITS=38
+NR_PATTERNS=16
+
+A project will pass these parameters to the HDL, and usually use
+"generics"/"parameters" to configure the HDL code. In this case, the
+descrack project is told to use 6 DES cores (per FPGA), a workunit size of
+38 bits, and match up to 16 patterns.
+
+
+== cli.py ==
+
+Command-line interface to the server. A running project uses a
+sqlite-backed database to store information, like the state of the
+workunits and meta-information (users, per-project configuration like match 
+patterns).
+
+Supported commands are:
+
+"results" - shows results
+"adduser" - adds a user (client)
+"users" - lists users
+"status" - get project status (short for "progress", "pending", "results")
+"pending" - shows workunits that have been allocated, but not completed
+"expire --seconds 3600" - expires workunits that have been allocated >=
+  3600s ago
+"init <project> <parameters>" - initializes a runtime-project based on
+  the named project, with the given parameters. Some parameters are global
+  (for descrack for example WORKUNIT_BITS), some are per-client (NR_CORES)
+  and don't need to be given here (obviously, since they might differ per
+  client)
+
+for descrack: (yes, this is not abstracted very well yet)
+"add_pattern 0 0011223344556677" - add a pattern to search for
+
+== server.py ==
+
+runs a http server (on port 8880) that's used by the client. You have to
+initialize the project first using the cli, but you can do changes (expire
+workunits, add users) while having the server running. Obviously adding
+patterns would be a bad idea.
+
+== run.py ==
+
+The actual code that talks to the FPGA (with jtag.so, the python wrapper
+around xc3sprog). 
+
+sample invokation:
+PYTHONPATH=../xc3sprog/ python run.py descrack \
+  NR_CORES=6,WORKUNIT_BITS=38,NR_RESULTS=16 Dance2048 http://localhost:8880 \
+  username password --productid=0x6011 --instances=9 --bitstream=dance2048_6_16_38.bit
+
+"descrack" is the project to run on. It must match with the server's name of
+the database.
+
+"NR_CORES..." are the parameters that have to BOTH match the actual
+bitstream, *and* the server. No validation is done (yet).
+
+"Dance2048" is the board that's used. 
+
+"http://localhost:8880" is the URL of the server.
+
+"username password" is the (very weak) authentication with the server. Don't
+rely on it!
+
+"--productid=0x6011" sets the USB product ID for an FTDI cable. This is
+obviously specific to your JTAG cable. "run.py" currently assumes FTDI
+cables, but that can be fixed.
+
+"--instances" sets the number of boards that are within one chain. They all
+need to be of the same type.
+
+"--bitstream" specifies the generated bitstream that has been generated with
+build_design.py
+

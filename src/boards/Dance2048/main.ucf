@@ -1,0 +1,17 @@
+Net leds<0> LOC="Y31";
+Net leds<1> LOC="P34";
+Net leds<2> LOC="W26";
+Net leds<3> LOC="AD30";
+
+
+net clkp loc="AL18";
+net clkn loc="AK18";
+
+NET "clkp" IOSTANDARD = LVDS_25;
+NET "clkn" IOSTANDARD = LVDS_25;
+NET "clkn" TNM_NET = clkn;
+TIMESPEC TS_clkn = PERIOD "clkn" 6.4 ns HIGH 50%;
+NET "clkp" TNM_NET = clkp;
+TIMESPEC TS_clkp = PERIOD "clkp" 6.4 ns HIGH 50%;
+NET "SCAN_DRCK1" TNM_NET = SCAN_DRCK1;
+TIMESPEC TS_SCAN_DRCK1 = PERIOD "SCAN_DRCK1" 1000 ns HIGH 50%;

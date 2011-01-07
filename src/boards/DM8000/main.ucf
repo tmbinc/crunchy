@@ -1,0 +1,3 @@
+net "clk_33mhz" loc="A10" | IOSTANDARD = "LVCMOS25";
+net "clk_33mhz" period = 30ns high 50%;
+

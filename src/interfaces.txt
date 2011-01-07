@@ -1,0 +1,29 @@
+#
+# interfaces that are supported for crunchy projects.
+#
+#
+# Each line either starts a new interface, or describes an IO within the
+# interface. First column for IOs is the direction, second the name, third
+# the default. Ranges are supported with "Signal[MSB:LSB]", defaults need to
+# match the signal. "in" signals don't need defaults, obviously.
+#
+
+XilinxUSER
+in SCAN_CAPTURE
+in SCAN_DRCK
+in SCAN_RESET
+in SCAN_SEL
+in SCAN_SHIFT
+in SCAN_TDI
+in SCAN_UPDATE
+out SCAN_TDO '0'
+
+Clock
+in CLK
+
+Reset
+# high active
+in RESET
+
+LED4
+out LED[3:0] "0000"

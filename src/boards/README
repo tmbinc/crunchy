@@ -1,0 +1,34 @@
+HOW TO ADD A BOARD:
+
+It's easy.
+
+First, figure out the interfaces you want to support. Interfaces can be
+found in interfaces.txt. It's always important to have a "Clock", and it
+might be useful to have "LED4" (4 user visible LEDs). "Reset" is not bad
+either, and you need some way to communicate with the core - currently
+"XilinxUSER" is the only supported mechanism, but of course that can be
+changed.
+
+Once you decided on the interfaces that you support, you have to derive the
+name for the "slot" in your board support file.
+If you support "Clock", "Reset", "XilinxUSER", then the name of the "Slot"
+must be:
+
+Project_Clock_Reset_XilinxUSER
+
+The order doesn't matter, and it should start with "Project".
+
+1. Write a constraints file for your board. You need to know the pins for
+that, and their io standard. It's also good to place timing constraints for
+the clocks.
+
+2. Write a top level HDL module. It's really tiny, and interfaces to the
+actual pins on the outer side, and to the "Project" on the inner side.
+
+3. Write a python description for it. It's simple, too - it just describes
+the files required to build the board support, it describes the name of the
+slot (and the name implies the supported interfaces). It also specifies the
+FPGA part to use.
+
+4. Create an empty __init__.py, since this is a python module.
+

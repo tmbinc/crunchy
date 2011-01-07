@@ -1,0 +1,7 @@
+Net leds<0> LOC="R20" | IOSTANDARD = "LVCMOS33" | SLEW = SLOW | DRIVE = 8;
+Net leds<1> LOC="T19" | IOSTANDARD = "LVCMOS33" | SLEW = SLOW | DRIVE = 8;
+Net leds<2> LOC="U20" | IOSTANDARD = "LVCMOS33" | SLEW = SLOW | DRIVE = 8;
+Net leds<3> LOC="U19" | IOSTANDARD = "LVCMOS33" | SLEW = SLOW | DRIVE = 8;
+
+net "clk_50mhz" loc="E12" | IOSTANDARD = "LVCMOS33";
+net "clk_50mhz" period = 20ns high 40%;

@@ -1,0 +1,19 @@
+net "clk_100mhz" loc="AJ15" | IOSTANDARD = "LVCMOS25";
+net "clk_100mhz" period = 10ns high 50%;
+
+NET "leds<0>" LOC = "AC4";
+NET "leds<1>" LOC = "AC3";
+NET "leds<2>" LOC = "AA6";
+NET "leds<3>" LOC = "AA5";
+NET "leds<0>" IOSTANDARD = LVTTL;
+NET "leds<1>" IOSTANDARD = LVTTL;
+NET "leds<2>" IOSTANDARD = LVTTL;
+NET "leds<3>" IOSTANDARD = LVTTL;
+NET "leds<0>" DRIVE = 12;
+NET "leds<1>" DRIVE = 12;
+NET "leds<2>" DRIVE = 12;
+NET "leds<3>" DRIVE = 12;
+NET "leds<0>" SLEW = SLOW;
+NET "leds<1>" SLEW = SLOW;
+NET "leds<2>" SLEW = SLOW;
+NET "leds<3>" SLEW = SLOW;
